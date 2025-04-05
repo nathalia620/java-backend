@@ -1,7 +1,10 @@
-package com.gestionetudiants.repository;  // Supprimez le point à la fin
+package com.my_first_jpa.demo.Repository;
 
-import com.gestionetudiants.model.Etudiant;  // Ajoutez cette importation
+import com.my_first_jpa.demo.model.Etudiant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface EtudiantRepository extends JpaRepository<Etudiant, Long> {
+@Repository
+public interface EtudiantRepository extends JpaRepository<Etudiant,Long> {
+
 }
