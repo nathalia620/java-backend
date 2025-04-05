@@ -1,30 +1,36 @@
-package com.gestionetudiants.model;
+package com.my_first_jpa.demo.model;
 
-import jakarta.persistence.*;  // Changement de javax.persistence à jakarta.persistence
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "etudiants")  // Optionnel: précise le nom de la table
 public class Etudiant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)  // Validation supplémentaire
     private String nom;
-
     @Column(nullable = false)
-    private float moyenne;
+    private double moyenne;
 
-    // Constructeurs
+    @Enumerated(EnumType.STRING)
+    private StatutEtudiant statut;
+
+
+    public Etudiant(Long id, String nom, double moyenne, StatutEtudiant statut) {
+        this.id = id;
+        this.nom = nom;
+        this.moyenne = moyenne;
+        this.statut = statut;
+    }
+
     public Etudiant() {
     }
 
-    public Etudiant(String nom, float moyenne) {
-        this.nom = nom;
-        this.moyenne = moyenne;
-    }
-
-    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -41,28 +47,33 @@ public class Etudiant {
         this.nom = nom;
     }
 
-    public float getMoyenne() {
+    public double getMoyenne() {
         return moyenne;
     }
 
-    public void setMoyenne(float moyenne) {
+    public void setMoyenne(double moyenne) {
         this.moyenne = moyenne;
     }
 
-    // Méthode utilitaire pour le statut
-    public String getStatut() {
-        if (moyenne >= 10) return "Admis";
-        else if (moyenne >= 5) return "Rattrapage";
-        else return "Exclu";
+    public StatutEtudiant getStatut() {
+        return statut;
     }
 
-    @Override
-    public String toString() {
-        return "Etudiant{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", moyenne=" + moyenne +
-                ", statut='" + getStatut() + '\'' +
-                '}';
+    public void setStatut(StatutEtudiant statut) {
+        this.statut = statut;
     }
+
+    @PrePersist
+    @PreUpdate
+    public void definirStatut() {
+        if (moyenne >= 10) {
+            this.statut = StatutEtudiant.ADMIS;
+        } else if (moyenne >= 5) {
+            this.statut = StatutEtudiant.REDOUBLANT;
+        } else {
+            this.statut = StatutEtudiant.EXCLU;
+        }
+    }
+
+
 }
